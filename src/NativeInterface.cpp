@@ -1,7 +1,7 @@
 #include "../includes/NativeInterface.h"
 
 NativeInterface::NativeInterface(const std::string &path, std::shared_ptr<EventQueue> queue) {
-  mNativeInterface.reset(new NativeImplementation(queue, path));
+  mNativeInterface.reset(new NativeImplementation(queue, path, false));
 }
 
 NativeInterface::~NativeInterface() {
