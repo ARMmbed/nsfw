@@ -21,7 +21,7 @@ using EmitCreatedEvent = std::function<void(std::string, std::string)>;
 
 class InotifyTree {
 public:
-  InotifyTree(int inotifyInstance, std::string path);
+  InotifyTree(int inotifyInstance, std::string path, bool followSymlinks);
 
   void addDirectory(int wd, std::string name, EmitCreatedEvent emitCreatedEvent = nullptr);
   std::string getError();
@@ -91,6 +91,7 @@ private:
   bool addInode(ino_t inodeNumber);
   void removeInode(ino_t inodeNumber);
 
+  bool mFollowSymlinks;
   std::string mError;
   const int mInotifyInstance;
   std::map<int, InotifyNode *> *mInotifyNodeByWatchDescriptor;
