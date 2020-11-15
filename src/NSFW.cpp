@@ -133,9 +133,9 @@ NAN_MODULE_INIT(NSFW::Init) {
 }
 
 NAN_METHOD(NSFW::JSNew) {
+  v8::Isolate *isolate = info.GetIsolate();
   if (!info.IsConstructCall()) {
     const int argc = 5;
-    v8::Isolate *isolate = info.GetIsolate();
     v8::Local<v8::Value> argv[argc] = {info[0], info[1], info[2], info[3], info[4]};
     v8::Local<v8::Context> context = isolate->GetCurrentContext();
     v8::Local<v8::Function> cons = v8::Local<v8::Function>::New(isolate, constructor);
@@ -163,7 +163,8 @@ NAN_METHOD(NSFW::JSNew) {
   uint32_t debounceMS = info[0]->Uint32Value(context).FromJust();
   Nan::Utf8String utf8Value(Nan::To<v8::String>(info[1]).ToLocalChecked());
   std::string path = std::string(*utf8Value);
-  bool followSymlinks = info[2]->BooleanValue();
+  Maybe<bool> maybeFollowSymlinks = info[2]->BooleanValue(isolate);
+  bool followSymlinks = maybeFollowSymlinks.IsNothing() ? false : maybeFollowSymlinks.FromJust();
   Callback *eventCallback = new Callback(info[3].As<v8::Function>());
   Callback *errorCallback = new Callback(info[4].As<v8::Function>());
 
